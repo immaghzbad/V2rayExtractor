@@ -2,6 +2,13 @@
 
 [![نمایش آنلاین](https://img.shields.io/badge/Live%20Demo-Click%20Here-blue?style=for-the-badge)](https://immaghzbad.github.io/V2rayExtractor/)
 [![GitHub stars](https://img.shields.io/github/stars/immaghzbad/V2rayExtractor?style=for-the-badge)](https://github.com/immaghzbad/V2rayExtractor/stargazers)
+[![Forks](https://img.shields.io/github/forks/immaghzbad/V2rayExtractor?style=for-the-badge)](https://github.com/immaghzbad/V2rayExtractor/fork)
+[![Issues](https://img.shields.io/github/issues/immaghzbad/V2rayExtractor?style=for-the-badge)](https://github.com/immaghzbad/V2rayExtractor/issues)
+[![Open Source](https://img.shields.io/badge/Open%20Source-Yes-brightgreen?style=for-the-badge)](https://github.com/immaghzbad/V2rayExtractor)
+[![MIT License](https://img.shields.io/github/license/immaghzbad/V2rayExtractor?style=for-the-badge)](https://github.com/immaghzbad/V2rayExtractor/blob/main/LICENSE)
+[![Last Commit](https://img.shields.io/github/last-commit/immaghzbad/V2rayExtractor?style=for-the-badge)](https://github.com/immaghzbad/V2rayExtractor/commits/main)
+[![Code Size](https://img.shields.io/github/languages/code-size/immaghzbad/V2rayExtractor?style=for-the-badge)](https://github.com/immaghzbad/V2rayExtractor)
+
 
 ابزاری حرفه‌ای و سریع برای مشاهده، استخراج و کپی کانفیگ‌های Hysteria، VMess، VLESS، Trojan و Shadowsocks با امکانات ویژه و رابط کاربری مدرن.
 
