@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>V2Ray Extractor | استخراج و مشاهده کانفیگ سرورهای V2Ray</title>
+    <meta name="description"
+        content="ابزاری برای مشاهده، استخراج و کپی سریع کانفیگ‌های V2Ray، VMess، VLESS، Trojan و Shadowsocks به همراه آمار پروتکل‌ها و جستجوی کشورها.">
+
+    <meta name="keywords"
+        content="V2Ray, VMess, VLESS, Trojan, Shadowsocks, کانفیگ, استخراج, پروکسی, فیلترشکن, سرور, ایران, اینترنت آزاد">
+    <meta name="author" content="ImMaghzBad">
+    <meta property="og:title" content="V2Ray Extractor | استخراج کانفیگ V2Ray">
+    <meta property="og:description"
+        content="مشاهده و کپی سریع کانفیگ‌های V2Ray و سایر پروتکل‌ها با آمار و جستجو بر اساس کشور.">
+    <meta property="og:type" content="website">
+    <meta property="og:locale" content="fa_IR">
+
+    <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazir-font@v30.1.0/dist/font-face.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: 'Vazir', sans-serif;
+        }
+
+        body {
+            margin: 0;
+            background: #191c24;
+            color: #ffffff;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+            padding-top: 130px;
+            padding-bottom: 110px;
+        }
+
+        header,
+        footer {
+            background: rgba(30, 30, 30, 0.5);
+            backdrop-filter: blur(10px) saturate(120%);
+            -webkit-backdrop-filter: blur(10px) saturate(120%);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        header {
+            text-align: center;
+            padding: 2rem 1.5rem;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 100;
+            overflow: hidden;
+        }
+
+        header::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            background: transparent;
+            z-index: 0;
+        }
+
+        .snowflake {
+            position: absolute;
+            top: -10px;
+            width: 6px;
+            height: 6px;
+            background: white;
+            border-radius: 50%;
+            opacity: 0.8;
+            animation-name: fall;
+            animation-timing-function: linear;
+            animation-iteration-count: infinite;
+        }
+
+        @keyframes fall {
+            0% {
+                transform: translateY(0) translateX(0);
+                opacity: 1;
+            }
+
+            100% {
+                transform: translateY(100vh) translateX(20px);
+                opacity: 0;
+            }
+        }
+
+        header h1 {
+            position: relative;
+            z-index: 1;
+            font-weight: bold;
+        }
+
+
+        main {
+            flex: 1 0 auto;
+            max-width: 1000px;
+            margin: auto;
+            padding: 5rem 1rem 6rem;
+        }
+
+        footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            padding: 0.8rem 1rem;
+            z-index: 100;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 0.3rem;
+            text-align: center;
+            font-size: 0.85rem;
+            line-height: 1.4;
+            color: #ccc;
+        }
+
+        #loader {
+            text-align: center;
+            padding: 2rem;
+            font-size: 1.2rem;
+            color: #58a6ff;
+        }
+
+        .country-list {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 1rem;
+            padding: 1rem;
+            max-width: 1000px;
+            margin: auto;
+        }
+
+        .country-item {
+            background: #212530;
+            border: 1px solid #30363d;
+            border-radius: 1rem;
+            width: 180px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .country-item:hover {
+            background: #2a2f3c;
+            transform: translateY(-3px);
+        }
+
+        .flag-img {
+            width: 100%;
+            height: 100px;
+            object-fit: cover;
+        }
+
+        .country-info {
+            padding: 0.8rem;
+            text-align: center;
+            color: #ffffff;
+        }
+
+        .country-info strong {
+            display: block;
+            margin-bottom: 0.3rem;
+            font-size: 1.1rem;
+        }
+
+        .country-info small {
+            display: block;
+            opacity: 0.7;
+        }
+
+        .configs {
+            padding: 1rem;
+            max-width: 900px;
+            margin: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .config-item {
+            background: linear-gradient(145deg, #262a35, #1f232c);
+            border: 1px solid #3a3f4b;
+            border-radius: 1rem;
+            padding: 1.5rem 1rem 2.5rem;
+            position: relative;
+            direction: ltr;
+            text-align: left;
+            white-space: pre-wrap;
+            word-break: break-word;
+            font-family: 'Courier New', monospace;
+            font-size: 0.95rem;
+            color: #e0e0e0;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .config-item:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.35);
+        }
+
+        .btn-copy,
+        .btn-copy-raw {
+            position: absolute;
+            bottom: 10px;
+            background: #3cb371;
+            color: white;
+            border: none;
+            padding: 0.35rem 0.7rem;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            font-size: 0.75rem;
+            direction: rtl;
+            line-height: 1.2;
+            white-space: nowrap;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+            transition: background 0.3s ease, transform 0.2s ease;
+        }
+
+        .btn-copy:hover,
+        .btn-copy-raw:hover {
+            background: #2e8b57;
+            transform: translateY(-2px);
+        }
+
+        .btn-copy {
+            right: 1rem;
+        }
+
+        .btn-copy-raw {
+            right: 90px;
+        }
+
+        @media (max-width: 480px) {
+            .config-item {
+                font-size: 0.85rem;
+                padding: 1rem 0.75rem 2.25rem;
+            }
+
+            .btn-copy {
+                right: 0.75rem;
+            }
+
+            .btn-copy-raw {
+                right: 80px;
+            }
+        }
+
+        a,
+        button {
+            user-select: auto;
+            cursor: pointer;
+            pointer-events: auto;
+        }
+
+        .developed-by {
+            margin: 0 0 0.5rem;
+            font-size: 0.85rem;
+            color: #a0a0a0;
+            text-align: center;
+        }
+
+        .developed-by a {
+            color: #58a6ff;
+            text-decoration: none;
+        }
+
+        .developed-by a:hover {
+            text-decoration: underline;
+        }
+
+        .social-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .btn-social {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            background: #2a2f3c;
+            color: white;
+            padding: 0.3rem 0.7rem;
+            border-radius: 1.2rem;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.8rem;
+            box-shadow: 0 3px 6px rgb(0 0 0 / 0.25);
+            transition: background 0.3s ease, transform 0.2s ease;
+        }
+
+        .btn-social:hover {
+            background: #58a6ff;
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .icon-circle {
+            width: 24px;
+            height: 24px;
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-shrink: 0;
+        }
+
+        .btn-social svg {
+            display: block;
+            width: 14px;
+            height: 14px;
+        }
+
+        #backToTopBtn {
+            position: fixed;
+            bottom: 20px;
+            right: 24px;
+            width: 52px;
+            height: 52px;
+            border-radius: 50%;
+            background: #2a2f3c;
+            color: #fff;
+            border: none;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.2rem;
+            cursor: pointer;
+            z-index: 200;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s;
+        }
+
+        #backToTopBtn.show {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        #backToTopBtn:hover {
+            background: #58a6ff;
+            color: #fff;
+        }
+    </style>
+</head>
+
+<body style="user-select:none;">
+    <header>
+        <h1>V2Ray Extractor</h1>
+    </header>
+
+    <div id="loader">در حال بارگیری لیست کشورها...</div>
+    <div class="country-list" id="countryList" style="display:none;"></div>
+    <div class="configs" id="configContainer"></div>
+
+    <footer>
+        <p class="developed-by">
+            توسعه یافته با ❤️ توسط
+            <a href="https://t.me/ImMaghzBad" target="_blank" rel="noopener noreferrer">ImMaghzBad@</a>
+        </p>
+        <div class="social-buttons">
+            <a href="https://t.me/ImMaghzBad" target="_blank" rel="noopener noreferrer" class="btn-social">
+                <span class="icon-circle">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="#0088cc" viewBox="0 0 24 24" width="20" height="20">
+                        <path
+                            d="M9.997 17.5c.448 0 .793-.17 1.036-.504l1.548-2.256 3.214 2.533c.463.25.796.12.913-.422l3.317-15.44c.17-.812-.3-1.165-.842-.964L2.98 9.46c-.787.302-.778.75-.136.965l4.41 1.376 10.232-6.422c.485-.275.928-.125.564.15L9.997 17.5z" />
+                    </svg>
+                </span>
+                تلگرام
+            </a>
+            <a href="https://github.com/ImMaghzBad" target="_blank" rel="noopener noreferrer" class="btn-social">
+                <span class="icon-circle">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="#333" viewBox="0 0 24 24" width="20" height="20">
+                        <path
+                            d="M12 0C5.37 0 0 5.372 0 12c0 5.303 3.438 9.8 8.205 11.387.6.112.82-.258.82-.577 0-.285-.01-1.04-.016-2.04-3.338.726-4.042-1.61-4.042-1.61-.546-1.386-1.333-1.755-1.333-1.755-1.09-.745.083-.729.083-.729 1.205.086 1.838 1.237 1.838 1.237 1.07 1.834 2.807 1.304 3.492.997.108-.775.42-1.305.763-1.605-2.665-.303-5.467-1.335-5.467-5.933 0-1.31.468-2.38 1.235-3.22-.124-.303-.535-1.523.117-3.176 0 0 1.008-.323 3.301 1.23a11.52 11.52 0 013.003-.404c1.02.005 2.046.138 3.003.404 2.29-1.553 3.296-1.23 3.296-1.23.654 1.653.243 2.873.12 3.176.77.84 1.233 1.91 1.233 3.22 0 4.61-2.807 5.625-5.48 5.922.43.37.813 1.102.813 2.222 0 1.606-.015 2.896-.015 3.287 0 .32.216.694.825.576C20.565 21.796 24 17.303 24 12c0-6.628-5.372-12-12-12z" />
+                    </svg>
+                </span>
+                گیت‌هاب
+            </a>
+        </div>
+    </footer>
+
+    <button id="backToTopBtn" aria-label="رفتن به بالا">
+        <span class="material-icons">keyboard_arrow_up</span>
+    </button>
+
+    <script src="https://unpkg.com/feather-icons"></script>
+
+    <script>
+        const _0x5aea20 = _0x3a29; (function (_0x18f5a7, _0x327d4d) { const _0x2ce3a0 = _0x3a29, _0x32e5e5 = _0x18f5a7(); while (!![]) { try { const _0x1d7579 = -parseInt(_0x2ce3a0(0x173)) / 0x1 + parseInt(_0x2ce3a0(0x187)) / 0x2 + -parseInt(_0x2ce3a0(0x98)) / 0x3 + -parseInt(_0x2ce3a0(0x96)) / 0x4 * (-parseInt(_0x2ce3a0(0x14c)) / 0x5) + parseInt(_0x2ce3a0(0x13d)) / 0x6 + parseInt(_0x2ce3a0(0xac)) / 0x7 + -parseInt(_0x2ce3a0(0x168)) / 0x8; if (_0x1d7579 === _0x327d4d) break; else _0x32e5e5['push'](_0x32e5e5['shift']()); } catch (_0x11db1b) { _0x32e5e5['push'](_0x32e5e5['shift']()); } } }(_0x1cda, 0x415b8)); const countryList = document[_0x5aea20(0x19d)](_0x5aea20(0x103)), configContainer = document[_0x5aea20(0x19d)](_0x5aea20(0x9d)), loader = document['getElementById'](_0x5aea20(0xc5)), header = document[_0x5aea20(0x87)](_0x5aea20(0x1a1)); for (let i = 0x0; i < 0x28; i++) { const snowflake = document[_0x5aea20(0x148)](_0x5aea20(0x108)); snowflake[_0x5aea20(0xdc)][_0x5aea20(0x169)](_0x5aea20(0x180)), snowflake[_0x5aea20(0xde)][_0x5aea20(0x129)] = Math[_0x5aea20(0x176)]() * 0x64 + 'vw', snowflake[_0x5aea20(0xde)][_0x5aea20(0x184)] = 0x5 + Math[_0x5aea20(0x176)]() * 0x5 + 's', snowflake[_0x5aea20(0xde)][_0x5aea20(0x16a)] = Math[_0x5aea20(0x176)]() * 0xa + 's', header['appendChild'](snowflake); } const countryNames = { 'AF': 'افغانستان', 'AL': 'آلبانی', 'DZ': _0x5aea20(0x198), 'AS': _0x5aea20(0x160), 'AD': 'آندورا', 'AO': _0x5aea20(0x143), 'AI': 'آنگویلا', 'AQ': _0x5aea20(0x138), 'AG': _0x5aea20(0xf1), 'AR': _0x5aea20(0x133), 'AM': _0x5aea20(0x151), 'AW': _0x5aea20(0x107), 'AU': _0x5aea20(0x11e), 'AT': _0x5aea20(0x197), 'AZ': 'آذربایجان', 'BS': 'باهاما', 'BH': _0x5aea20(0xf6), 'BD': _0x5aea20(0x82), 'BB': 'باربادوس', 'BY': _0x5aea20(0xe5), 'BE': _0x5aea20(0xad), 'BZ': _0x5aea20(0x7d), 'BJ': 'بنین', 'BM': _0x5aea20(0x99), 'BT': 'بوتان', 'BO': _0x5aea20(0xa0), 'BA': _0x5aea20(0x13c), 'BW': 'بوتسوانا', 'BR': _0x5aea20(0x199), 'BN': _0x5aea20(0x149), 'BG': _0x5aea20(0x113), 'BF': _0x5aea20(0x16d), 'BI': 'بوروندی', 'KH': _0x5aea20(0x11f), 'CM': _0x5aea20(0xb2), 'CA': _0x5aea20(0x174), 'CV': _0x5aea20(0x185), 'CF': _0x5aea20(0xd6), 'TD': 'چاد', 'CL': 'شیلی', 'CN': 'چین', 'CO': 'کلمبیا', 'KM': 'کومور', 'CG': 'کنگو\x20(برازاویل)', 'CD': _0x5aea20(0xd2), 'CR': _0x5aea20(0x12f), 'CI': _0x5aea20(0x91), 'HR': 'کرواسی', 'CU': _0x5aea20(0x17f), 'CW': _0x5aea20(0xf2), 'CY': _0x5aea20(0x9b), 'CZ': _0x5aea20(0x189), 'DK': 'دانمارک', 'DJ': _0x5aea20(0xcc), 'DM': _0x5aea20(0xdd), 'DO': _0x5aea20(0x18d), 'EC': _0x5aea20(0xb0), 'EG': _0x5aea20(0x14d), 'SV': _0x5aea20(0x177), 'GQ': 'گینه\x20استوایی', 'ER': 'اریتره', 'EE': _0x5aea20(0x19e), 'SZ': _0x5aea20(0x19b), 'ET': _0x5aea20(0x161), 'FK': 'جزایر\x20فالکلند', 'FO': _0x5aea20(0xf4), 'FJ': _0x5aea20(0x8b), 'FI': _0x5aea20(0x9e), 'FR': _0x5aea20(0x15d), 'GF': 'گویان\x20فرانسه', 'PF': _0x5aea20(0x124), 'TF': _0x5aea20(0x19c), 'GA': _0x5aea20(0xe3), 'GM': _0x5aea20(0x144), 'GE': 'گرجستان', 'DE': _0x5aea20(0xdb), 'GH': _0x5aea20(0xe2), 'GI': 'جبل‌الطارق', 'GR': _0x5aea20(0x14f), 'GL': _0x5aea20(0x19a), 'GD': 'گرنادا', 'GP': _0x5aea20(0x12c), 'GU': _0x5aea20(0xb5), 'GT': _0x5aea20(0x134), 'GG': 'گرنزی', 'GN': _0x5aea20(0x152), 'GW': _0x5aea20(0xda), 'GY': 'گویان', 'HT': _0x5aea20(0x175), 'HM': _0x5aea20(0x7f), 'VA': _0x5aea20(0x15b), 'HN': _0x5aea20(0x162), 'HK': 'هنگ‌کنگ', 'HU': _0x5aea20(0x123), 'IS': _0x5aea20(0x141), 'IN': _0x5aea20(0x130), 'ID': _0x5aea20(0xfd), 'IR': 'ایران', 'IQ': _0x5aea20(0x158), 'IE': _0x5aea20(0x118), 'IM': _0x5aea20(0xea), 'IL': _0x5aea20(0xee), 'IT': _0x5aea20(0xf7), 'JM': _0x5aea20(0x9c), 'JP': _0x5aea20(0x86), 'JE': 'جرزی', 'JO': 'اردن', 'KZ': 'قزاقستان', 'KE': 'کنیا', 'KI': 'کیریباتی', 'KP': _0x5aea20(0x155), 'KR': _0x5aea20(0x186), 'KW': _0x5aea20(0x178), 'KG': _0x5aea20(0x10e), 'LA': _0x5aea20(0xb9), 'LV': _0x5aea20(0x170), 'LB': 'لبنان', 'LS': _0x5aea20(0xcb), 'LR': _0x5aea20(0x10c), 'LY': _0x5aea20(0x104), 'LI': 'لیختن‌اشتاین', 'LT': _0x5aea20(0x83), 'LU': _0x5aea20(0xec), 'MO': _0x5aea20(0x12d), 'MG': _0x5aea20(0x136), 'MW': _0x5aea20(0xb4), 'MY': 'مالزی', 'MV': _0x5aea20(0x11c), 'ML': _0x5aea20(0xe4), 'MT': 'مالت', 'MH': _0x5aea20(0xfa), 'MQ': _0x5aea20(0x146), 'MR': _0x5aea20(0xa1), 'MU': _0x5aea20(0x10d), 'YT': _0x5aea20(0xd0), 'MX': _0x5aea20(0x164), 'FM': _0x5aea20(0x14b), 'MD': _0x5aea20(0xed), 'MC': 'موناکو', 'MN': _0x5aea20(0xd1), 'ME': 'مونته‌نگرو', 'MS': _0x5aea20(0xa4), 'MA': _0x5aea20(0x16b), 'MZ': 'موزامبیک', 'MM': 'میانمار', 'NA': _0x5aea20(0xaa), 'NR': _0x5aea20(0xc4), 'NP': _0x5aea20(0x139), 'NL': _0x5aea20(0xca), 'NC': _0x5aea20(0xd5), 'NZ': _0x5aea20(0xae), 'NI': _0x5aea20(0x135), 'NE': _0x5aea20(0x95), 'NG': _0x5aea20(0x140), 'NU': 'نیوئه', 'NF': 'جزیره\x20نورفولک', 'MK': _0x5aea20(0x8e), 'MP': 'جزایر\x20ماریانای\x20شمالی', 'NO': _0x5aea20(0xef), 'OM': _0x5aea20(0x81), 'PK': _0x5aea20(0x15c), 'PW': _0x5aea20(0x106), 'PS': _0x5aea20(0x16c), 'PA': 'پاناما', 'PG': 'پاپوآ\x20گینه\x20نو', 'PY': _0x5aea20(0x172), 'PE': 'پرو', 'PH': _0x5aea20(0x157), 'PN': _0x5aea20(0x7b), 'PL': _0x5aea20(0x137), 'PT': _0x5aea20(0x16f), 'PR': _0x5aea20(0x115), 'QA': 'قطر', 'RE': _0x5aea20(0xfc), 'RO': _0x5aea20(0x11a), 'RU': _0x5aea20(0x88), 'RW': _0x5aea20(0x92), 'BL': _0x5aea20(0x196), 'SH': _0x5aea20(0x9a), 'KN': 'سنت\x20کیتس\x20و\x20نویس', 'LC': _0x5aea20(0x15a), 'MF': 'سن\x20مارتن', 'PM': 'سن\x20پیر\x20و\x20میکلن', 'VC': _0x5aea20(0x10a), 'WS': _0x5aea20(0xc0), 'SM': _0x5aea20(0xc2), 'ST': _0x5aea20(0x94), 'SA': _0x5aea20(0x18f), 'SN': _0x5aea20(0xd3), 'RS': 'صربستان', 'SC': _0x5aea20(0xbd), 'SL': _0x5aea20(0x12b), 'SG': _0x5aea20(0x183), 'SX': _0x5aea20(0xc7), 'SK': _0x5aea20(0x167), 'SI': 'اسلوونی', 'SB': 'جزایر\x20سلیمان', 'SO': _0x5aea20(0x13a), 'ZA': _0x5aea20(0x16e), 'GS': 'جزایر\x20جورجیای\x20جنوبی\x20و\x20ساندویچ\x20جنوبی', 'ES': _0x5aea20(0x114), 'LK': _0x5aea20(0xb8), 'SD': _0x5aea20(0x9f), 'SR': _0x5aea20(0xce), 'SJ': 'اسوالبارد\x20و\x20یان\x20ماین', 'SE': _0x5aea20(0xd9), 'CH': _0x5aea20(0x188), 'SY': 'سوریه', 'TW': _0x5aea20(0xff), 'TJ': _0x5aea20(0x171), 'TZ': _0x5aea20(0x166), 'TH': _0x5aea20(0x85), 'TL': _0x5aea20(0x7c), 'TG': _0x5aea20(0x11d), 'TK': _0x5aea20(0xf8), 'TO': 'تونگا', 'TT': 'ترینیداد\x20و\x20توباگو', 'TN': _0x5aea20(0x18c), 'TR': _0x5aea20(0xf9), 'TM': _0x5aea20(0xc8), 'TC': _0x5aea20(0x17c), 'TV': _0x5aea20(0x195), 'UG': _0x5aea20(0xab), 'UA': _0x5aea20(0xb3), 'AE': _0x5aea20(0x119), 'GB': _0x5aea20(0x150), 'US': _0x5aea20(0xfb), 'UM': _0x5aea20(0xdf), 'UY': _0x5aea20(0x154), 'UZ': _0x5aea20(0x12e), 'VU': _0x5aea20(0x8a), 'VE': _0x5aea20(0x84), 'VN': 'ویتنام', 'VG': _0x5aea20(0x179), 'VI': 'جزایر\x20ویرجین\x20ایالات\x20متحده', 'WF': _0x5aea20(0xe7), 'EH': _0x5aea20(0xbc), 'YE': _0x5aea20(0xe9), 'ZM': _0x5aea20(0xa3), 'ZW': _0x5aea20(0xcf) }; async function fetchFileList() { const _0x5cdd92 = _0x5aea20, _0x323957 = await fetch(_0x5cdd92(0xbb)), _0x50e7d = await _0x323957[_0x5cdd92(0xcd)](); loader['style'][_0x5cdd92(0x14a)] = _0x5cdd92(0xc6), countryList[_0x5cdd92(0xde)][_0x5cdd92(0x14a)] = _0x5cdd92(0x101), _0x50e7d[_0x5cdd92(0x17d)](_0x416bc2 => _0x416bc2[_0x5cdd92(0xeb)]['endsWith'](_0x5cdd92(0x132)))[_0x5cdd92(0x7a)](_0x12147f => { const _0x174061 = _0x5cdd92, _0x356acf = _0x12147f['name'][_0x174061(0x120)]('\x20')[0x0][_0x174061(0x10f)](), _0x1df24b = _0x12147f[_0x174061(0x93)]; fetch(_0x1df24b)[_0x174061(0x122)](_0x40a386 => _0x40a386['text']())[_0x174061(0x122)](_0x44ed5e => { const _0x299dbb = _0x174061, _0x5d4c6e = _0x44ed5e['trim']()[_0x299dbb(0x120)]('\x0a')[_0x299dbb(0xbf)], _0x4ae41d = document['createElement']('div'); _0x4ae41d[_0x299dbb(0x126)] = _0x299dbb(0x191); const _0x4dcfee = countryNames[_0x356acf] || 'نامشخص', _0x47512c = countryNames[_0x356acf] ? 'https://flagcdn.com/w320/' + _0x356acf[_0x299dbb(0x18b)]() + _0x299dbb(0xf0) : _0x299dbb(0xf3); _0x4ae41d[_0x299dbb(0x156)] = _0x299dbb(0x163) + _0x47512c + '\x22\x20alt=\x22' + _0x356acf + _0x299dbb(0xa2) + _0x356acf + _0x299dbb(0x117) + _0x4dcfee + _0x299dbb(0x182) + _0x5d4c6e + _0x299dbb(0x125), _0x4ae41d[_0x299dbb(0x18e)] = () => loadConfig(_0x12147f), countryList[_0x299dbb(0x181)](_0x4ae41d); }); }); } async function loadConfig(_0x77d3c8) { const _0x491b5c = _0x5aea20, _0x1cfb03 = await fetch(_0x77d3c8[_0x491b5c(0x93)]), _0x4b76a2 = await _0x1cfb03[_0x491b5c(0x102)](), _0x20b5c4 = _0x4b76a2[_0x491b5c(0x105)]()[_0x491b5c(0x120)]('\x0a'); configContainer['innerHTML'] = ''; const _0x5e8495 = { 'vless': 0x0, 'vmess': 0x0, 'trojan': 0x0, 'ss': 0x0, 'hy2': 0x0, 'others': 0x0 }; _0x20b5c4['forEach'](_0x57840e => { const _0x55c422 = _0x491b5c, _0x26ee57 = _0x57840e[_0x55c422(0x18b)](); if (_0x26ee57[_0x55c422(0x14e)](_0x55c422(0x165))) _0x5e8495[_0x55c422(0xe0)]++; else { if (_0x26ee57[_0x55c422(0x14e)](_0x55c422(0x8f))) _0x5e8495[_0x55c422(0x192)]++; else { if (_0x26ee57['startsWith'](_0x55c422(0x80))) _0x5e8495['trojan']++; else { if (_0x26ee57[_0x55c422(0x14e)](_0x55c422(0xb1))) _0x5e8495['ss']++; else { if (_0x26ee57[_0x55c422(0x14e)]('hy2://')) _0x5e8495['hy2']++; else _0x5e8495[_0x55c422(0x194)]++; } } } } const _0x497eb9 = document[_0x55c422(0x148)]('div'); _0x497eb9[_0x55c422(0x126)] = _0x55c422(0xd8), _0x497eb9[_0x55c422(0x11b)] = _0x57840e; const _0x59c667 = document[_0x55c422(0x148)](_0x55c422(0x127)); _0x59c667['className'] = 'bg-blue-600\x20hover:bg-blue-700\x20text-white\x20text-sm\x20px-3\x20py-1\x20rounded\x20mt-2\x20w-fit', _0x59c667['textContent'] = 'کپی', _0x59c667[_0x55c422(0x18e)] = () => { const _0x2aed89 = _0x55c422; navigator[_0x2aed89(0x128)]['writeText'](_0x57840e)['then'](() => { showToast('کانفیگ\x20با\x20موفقیت\x20کپی\x20شد!'); })['catch'](() => { const _0x24df26 = _0x2aed89; showToast(_0x24df26(0x190)); }); }; const _0x54ccb6 = document[_0x55c422(0x148)](_0x55c422(0x127)); _0x54ccb6[_0x55c422(0x126)] = _0x55c422(0x18a), _0x54ccb6['textContent'] = _0x55c422(0xa9), _0x54ccb6['onclick'] = () => { const _0x221c50 = _0x55c422; navigator[_0x221c50(0x128)][_0x221c50(0x13b)](_0x77d3c8['download_url'])[_0x221c50(0x122)](() => { const _0xfc4c97 = _0x221c50; showToast(_0xfc4c97(0xc1)); })[_0x221c50(0x153)](() => { const _0x3b40ab = _0x221c50; showToast(_0x3b40ab(0xd7)); }); }, _0x497eb9[_0x55c422(0x181)](_0x59c667), _0x497eb9[_0x55c422(0x181)](_0x54ccb6), configContainer[_0x55c422(0x181)](_0x497eb9); }); const _0x403cba = document[_0x491b5c(0x148)]('div'); _0x403cba[_0x491b5c(0x126)] = _0x491b5c(0x17e), _0x403cba[_0x491b5c(0x156)] = _0x491b5c(0xe6) + _0x5e8495[_0x491b5c(0xe0)] + _0x491b5c(0x10b) + _0x5e8495[_0x491b5c(0x192)] + '</li>\x0a\x20\x20\x20\x20\x20\x20\x20\x20<li\x20class=\x22flex\x20items-center\x20gap-2\x22><span\x20class=\x22material-icons\x20text-red-400\x22>vpn_key</span>\x20TROJAN:\x20' + _0x5e8495[_0x491b5c(0x12a)] + _0x491b5c(0x15f) + _0x5e8495['ss'] + _0x491b5c(0xe1) + _0x5e8495[_0x491b5c(0xc9)] + _0x491b5c(0x147) + _0x5e8495[_0x491b5c(0x194)] + _0x491b5c(0x109), configContainer[_0x491b5c(0x19f)](_0x403cba), window['scrollTo']({ 'top': configContainer[_0x491b5c(0x145)], 'behavior': _0x491b5c(0x110) }); } const backToTopBtn = document[_0x5aea20(0x19d)](_0x5aea20(0x116)); window['addEventListener'](_0x5aea20(0x111), () => { const _0x55f615 = _0x5aea20; window[_0x55f615(0xa6)] > 0x12c ? backToTopBtn[_0x55f615(0xdc)][_0x55f615(0x169)]('show') : backToTopBtn[_0x55f615(0xdc)][_0x55f615(0x17a)](_0x55f615(0xd4)); }), backToTopBtn[_0x5aea20(0xa8)](_0x5aea20(0x15e), () => { const _0x5670a4 = _0x5aea20; window[_0x5670a4(0x89)]({ 'top': 0x0, 'behavior': _0x5670a4(0x110) }), backToTopBtn[_0x5670a4(0xdc)][_0x5670a4(0x17a)](_0x5670a4(0xd4)); }), document[_0x5aea20(0xa8)]('contextmenu', _0x2353ee => { const _0x4eeb33 = _0x5aea20; _0x2353ee[_0x4eeb33(0x13e)](), showToast(_0x4eeb33(0x193)); }), document[_0x5aea20(0xa8)](_0x5aea20(0xa5), function (_0x5189bf) { const _0x1c918d = _0x5aea20; _0x5189bf[_0x1c918d(0x13f)] && _0x5189bf[_0x1c918d(0xf5)]['toLowerCase']() === 'u' && (_0x5189bf['preventDefault'](), showToast(_0x1c918d(0x7e))), _0x5189bf[_0x1c918d(0x13f)] && _0x5189bf['shiftKey'] && _0x5189bf[_0x1c918d(0xf5)][_0x1c918d(0x18b)]() === 'i' && (_0x5189bf[_0x1c918d(0x13e)](), showToast(_0x1c918d(0xbe))), _0x5189bf[_0x1c918d(0xf5)] === 'F12' && (_0x5189bf[_0x1c918d(0x13e)](), showToast(_0x1c918d(0xbe))); }); function showToast(_0x3e0ca2) { const _0x2cbf86 = _0x5aea20; let _0x57a1f8 = document['getElementById']('my-toast'); !_0x57a1f8 && (_0x57a1f8 = document[_0x2cbf86(0x148)](_0x2cbf86(0x108)), _0x57a1f8['id'] = _0x2cbf86(0x100), _0x57a1f8[_0x2cbf86(0xde)]['position'] = _0x2cbf86(0x90), _0x57a1f8[_0x2cbf86(0xde)][_0x2cbf86(0x17b)] = _0x2cbf86(0x159), _0x57a1f8[_0x2cbf86(0xde)][_0x2cbf86(0xc3)] = _0x2cbf86(0x8d), _0x57a1f8['style']['left'] = _0x2cbf86(0x131), _0x57a1f8[_0x2cbf86(0xde)]['transform'] = 'translateX(-50%)', _0x57a1f8[_0x2cbf86(0xde)]['background'] = _0x2cbf86(0x1a0), _0x57a1f8['style'][_0x2cbf86(0xe8)] = _0x2cbf86(0xfe), _0x57a1f8['style']['padding'] = _0x2cbf86(0xa7), _0x57a1f8[_0x2cbf86(0xde)][_0x2cbf86(0x97)] = _0x2cbf86(0x121), _0x57a1f8[_0x2cbf86(0xde)]['fontSize'] = _0x2cbf86(0xb6), _0x57a1f8[_0x2cbf86(0xde)]['width'] = _0x2cbf86(0x142), _0x57a1f8[_0x2cbf86(0xde)][_0x2cbf86(0xb7)] = _0x2cbf86(0x112), _0x57a1f8[_0x2cbf86(0xde)][_0x2cbf86(0xaf)] = '0', _0x57a1f8[_0x2cbf86(0xde)][_0x2cbf86(0x8c)] = _0x2cbf86(0xba), document['body'][_0x2cbf86(0x181)](_0x57a1f8)), _0x57a1f8[_0x2cbf86(0x11b)] = _0x3e0ca2, _0x57a1f8['style'][_0x2cbf86(0xaf)] = '1', setTimeout(() => { const _0x4a17f5 = _0x2cbf86; _0x57a1f8[_0x4a17f5(0xde)][_0x4a17f5(0xaf)] = '0'; }, 0x7d0); } function _0x1cda() { const _0x4f1a14 = ['left', 'trojan', 'سیرالئون', 'گوادلوپ', 'ماکائو', 'ازبکستان', 'کاستاریکا', 'هند', '50%', '.txt', 'آرژانتین', 'گواتمالا', 'نیکاراگوئه', 'ماداگاسکار', 'لهستان', 'جنوبگان', 'نپال', 'سومالی', 'writeText', 'بوسنی\x20و\x20هرزگوین', '2469180NmQcat', 'preventDefault', 'ctrlKey', 'نیجریه', 'ایسلند', '320px', 'آنگولا', 'گامبیا', 'offsetTop', 'مارتینیک', '</li>\x0a\x20\x20\x20\x20\x20\x20\x20\x20<li\x20class=\x22flex\x20items-center\x20gap-2\x22><span\x20class=\x22material-icons\x20text-gray-400\x22>help_outline</span>\x20سایر:\x20', 'createElement', 'برونئی', 'display', 'میکرونزی', '10UONQzc', 'مصر', 'startsWith', 'یونان', 'بریتانیا', 'ارمنستان', 'گینه', 'catch', 'اروگوئه', 'کره\x20شمالی', 'innerHTML', 'فیلیپین', 'عراق', 'center', 'سنت\x20لوسیا', 'واتیکان', 'پاکستان', 'فرانسه', 'click', '</li>\x0a\x20\x20\x20\x20\x20\x20\x20\x20<li\x20class=\x22flex\x20items-center\x20gap-2\x22><span\x20class=\x22material-icons\x20text-yellow-400\x22>ac_unit</span>\x20SS:\x20', 'ساموآی\x20آمریکا', 'اتیوپی', 'هندوراس', '\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<img\x20class=\x22flag-img\x22\x20src=\x22', 'مکزیک', 'vless://', 'تانزانیا', 'اسلواکی', '3176488xEagRA', 'add', 'animationDelay', 'مراکش', 'فلسطین', 'بورکینافاسو', 'آفریقای\x20جنوبی', 'پرتغال', 'لتونی', 'تاجیکستان', 'پاراگوئه', '93233ARYyLX', 'کانادا', 'هائیتی', 'random', 'السالوادور', 'کویت', 'جزایر\x20ویرجین\x20بریتانیا', 'remove', 'textAlign', 'جزایر\x20تورکس\x20و\x20کایکوس', 'filter', 'bg-gray-900\x20text-white\x20rounded-xl\x20p-4\x20shadow-xl\x20mt-4', 'کوبا', 'snowflake', 'appendChild', '</strong>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<small>', 'سنگاپور', 'animationDuration', 'کیپ\x20ورد', 'کره\x20جنوبی', '1000542SsuYdW', 'سوئیس', 'جمهوری\x20چک', 'bg-gray-600\x20hover:bg-gray-700\x20text-white\x20text-sm\x20px-3\x20py-1\x20rounded\x20mt-2\x20w-fit', 'toLowerCase', 'تونس', 'جمهوری\x20دومینیکن', 'onclick', 'عربستان\x20سعودی', 'خطا\x20در\x20کپی!', 'country-item', 'vmess', 'راست\x20کلیک\x20غیرفعال\x20است!', 'others', 'تووالو', 'سن\x20بارتلمی', 'اتریش', 'الجزایر', 'برزیل', 'گرینلند', 'اسواتینی', 'سرزمین‌های\x20جنوبی\x20فرانسه', 'getElementById', 'استونی', 'prepend', '#323232', 'header', 'forEach', 'پیت‌کرن', 'تیمور\x20شرقی', 'بلیز', 'دسترسی\x20به\x20سورس\x20غیرفعال\x20است!', 'جزایر\x20هرد\x20و\x20مک‌دونالد', 'trojan://', 'عمان', 'بنگلادش', 'لیتوانی', 'ونزوئلا', 'تایلند', 'ژاپن', 'querySelector', 'روسیه', 'scrollTo', 'وانواتو', 'فیجی', 'transition', '100px', 'مقدونیه\x20شمالی', 'vmess://', 'fixed', 'ساحل\x20عاج', 'رواندا', 'download_url', 'سائوتومه\x20و\x20پرنسیپ', 'نیجر', '27052MmcDqc', 'borderRadius', '938556YMorCT', 'برمودا', 'سنت\x20هلن', 'قبرس', 'جامائیکا', 'configContainer', 'فنلاند', 'سودان', 'بولیوی', 'موریتانی', '\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<div\x20class=\x22country-info\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<strong>', 'زامبیا', 'مونتسرات', 'keydown', 'scrollY', '12px\x2024px', 'addEventListener', 'کپی\x20با\x20لینک\x20RAW', 'نامیبیا', 'اوگاندا', '1018661ilbcRZ', 'بلژیک', 'نیوزیلند', 'opacity', 'اکوادور', 'ss://', 'کامرون', 'اوکراین', 'مالاوی', 'گوآم', '1rem', 'zIndex', 'سری‌لانکا', 'لائوس', 'opacity\x200.3s', 'https://api.github.com/repos/arshiacomplus/v2rayExtractor/contents/loc', 'صحرای\x20غربی', 'سیشل', 'دسترسی\x20به\x20ابزار\x20توسعه\x20غیرفعال\x20است!', 'length', 'ساموآ', 'لینک\x20RAW\x20با\x20موفقیت\x20کپی\x20شد!', 'سن\x20مارینو', 'bottom', 'نائورو', 'loader', 'none', 'سینت\x20مارتن', 'ترکمنستان', 'hy2', 'هلند', 'لسوتو', 'جیبوتی', 'json', 'سورینام', 'زیمبابوه', 'مایوت', 'مغولستان', 'کنگو\x20(کینشاسا)', 'سنگال', 'show', 'کالدونیای\x20جدید', 'جمهوری\x20آفریقای\x20مرکزی', 'خطا\x20در\x20کپی\x20لینک\x20RAW!', 'bg-gray-800\x20text-white\x20p-3\x20rounded-lg\x20mb-2\x20shadow\x20flex\x20flex-col\x20break-all', 'سوئد', 'گینه\x20بیسائو', 'آلمان', 'classList', 'دومینیکا', 'style', 'جزایر\x20کوچک\x20دورافتاده\x20ایالات\x20متحده', 'vless', '</li>\x0a\x20\x20\x20\x20\x20\x20\x20\x20<li\x20class=\x22flex\x20items-center\x20gap-2\x22><span\x20class=\x22material-icons\x20text-purple-400\x22>flash_on</span>\x20HY2:\x20', 'غنا', 'گابن', 'مالی', 'بلاروس', '\x0a\x20\x20\x20\x20<h2\x20class=\x22text-lg\x20font-bold\x20mb-4\x20flex\x20items-center\x20gap-2\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20<svg\x20xmlns=\x22http://www.w3.org/2000/svg\x22\x20class=\x22h-5\x20w-5\x20text-blue-400\x22\x20fill=\x22none\x22\x20viewBox=\x220\x200\x2024\x2024\x22\x20stroke=\x22currentColor\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<path\x20stroke-linecap=\x22round\x22\x20stroke-linejoin=\x22round\x22\x20stroke-width=\x222\x22\x20d=\x22M9\x2017v-2a4\x204\x200\x20014-4h4M9\x2017l-4-4m4\x204l4-4\x22\x20/>\x0a\x20\x20\x20\x20\x20\x20\x20\x20</svg>\x0a\x20\x20\x20\x20\x20\x20\x20\x20آمار\x20پروتکل‌ها\x0a\x20\x20\x20\x20</h2>\x0a\x20\x20\x20\x20<ul\x20class=\x22space-y-1\x20text-sm\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20<li\x20class=\x22flex\x20items-center\x20gap-2\x22><span\x20class=\x22material-icons\x20text-blue-400\x22>network_wifi</span>\x20VLESS:\x20', 'والیس\x20و\x20فوتونا', 'color', 'یمن', 'جزیره\x20من', 'name', 'لوکزامبورگ', 'مولداوی', 'اسرائیل', 'نروژ', '.png', 'آنتیگوا\x20و\x20باربودا', 'کوراسائو', 'unknown-country.png', 'جزایر\x20فارو', 'key', 'بحرین', 'ایتالیا', 'توکلائو', 'ترکیه', 'جزایر\x20مارشال', 'آمریکا', 'رئونیون', 'اندونزی', '#fff', 'تایوان', 'my-toast', 'flex', 'text', 'countryList', 'لیبی', 'trim', 'پالائو', 'آروبا', 'div', '</li>\x0a\x20\x20\x20\x20</ul>\x0a', 'سنت\x20وینسنت\x20و\x20گرنادین‌ها', '</li>\x0a\x20\x20\x20\x20\x20\x20\x20\x20<li\x20class=\x22flex\x20items-center\x20gap-2\x22><span\x20class=\x22material-icons\x20text-green-400\x22>diamond</span>\x20VMESS:\x20', 'لیبریا', 'موریس', 'قرقیزستان', 'toUpperCase', 'smooth', 'scroll', '9999', 'بلغارستان', 'اسپانیا', 'پورتوریکو', 'backToTopBtn', '\x20/\x20', 'ایرلند', 'امارات\x20متحده\x20عربی', 'رومانی', 'textContent', 'مالدیو', 'توگو', 'استرالیا', 'کامبوج', 'split', '8px', 'then', 'مجارستان', 'پلی‌نزی\x20فرانسه', '\x20کانفیگ\x20موجود</small>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20</div>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20', 'className', 'button', 'clipboard']; _0x1cda = function () { return _0x4f1a14; }; return _0x1cda(); } function _0x3a29(_0x37754c, _0x3f2cee) { const _0x1cda09 = _0x1cda(); return _0x3a29 = function (_0x3a297a, _0x13c350) { _0x3a297a = _0x3a297a - 0x7a; let _0x5cb1d2 = _0x1cda09[_0x3a297a]; return _0x5cb1d2; }, _0x3a29(_0x37754c, _0x3f2cee); } fetchFileList();
+    </script>
+
+</body>
+
+</html>
