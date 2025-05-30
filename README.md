@@ -3,7 +3,7 @@
 [![نمایش آنلاین](https://img.shields.io/badge/Live%20Demo-Click%20Here-blue?style=for-the-badge)](https://immaghzbad.github.io/V2rayExtractor/)
 [![GitHub stars](https://img.shields.io/github/stars/immaghzbad/V2rayExtractor?style=for-the-badge)](https://github.com/immaghzbad/V2rayExtractor/stargazers)
 
-ابزاری حرفه‌ای و سریع برای مشاهده، استخراج و کپی کانفیگ‌های V2Ray، VMess، VLESS، Trojan و Shadowsocks با امکانات ویژه و رابط کاربری مدرن.
+ابزاری حرفه‌ای و سریع برای مشاهده، استخراج و کپی کانفیگ‌های Hysteria، VMess، VLESS، Trojan و Shadowsocks با امکانات ویژه و رابط کاربری مدرن.
 
 ---
 
@@ -17,7 +17,6 @@
   تنها با یک کلیک، کانفیگ یا لینک خام را کپی کنید.
 - **جستجو و فیلتر کشورها**
 - **پینگ دقیق و تست سرعت سرورها**  
-  (در نسخه‌های آینده)
 - **آپدیت خودکار لیست سرورها بر اساس لوکیشن**  
   همیشه جدیدترین سرورها را دریافت کنید.
 - **رابط کاربری فارسی و راست‌چین**
@@ -46,7 +45,7 @@
 
 - [ImMaghzBad](https://github.com/immaghzbad) | [تلگرام](https://t.me/ImMaghzBad)  
   <sub dir="rtl" align="right">کدنویسی و طراحی رابط کاربری HTML این پروژه توسط ImMaghzBad انجام شده است.</sub>
-- [arshiacampos](https://github.com/arshiacomplus)  
+- [arshiacomplus](https://github.com/arshiacomplus)  
   <sub dir="rtl" align="right">ایده و پیاده‌سازی بخش اصلی پینگ گرفتن و دسته‌بندی کانفیگ‌ها توسط arshiacomplus انجام شده است.</sub>
 
 ---
