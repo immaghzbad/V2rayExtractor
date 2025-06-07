@@ -25,16 +25,36 @@
         }
 
         header {
-            text-align: center;
-            padding: 1rem 1rem;
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
+            height: 56px;
+            /* ارتفاع هدر */
+            background: rgba(30, 30, 30, 0.5);
+            backdrop-filter: blur(10px) saturate(120%);
+            -webkit-backdrop-filter: blur(10px) saturate(120%);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
             z-index: 100;
-            overflow: hidden;
-            min-height: 56px;
+            padding: 0 1rem;
+            overflow: visible;
         }
+
+        #snow-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+            /* اجازه نده افکت مزاحم کلیک‌ها بشه */
+            width: 100%;
+            height: 56px;
+            z-index: 0;
+        }
+
 
         header::before {
             content: "";
@@ -52,6 +72,17 @@
             position: relative;
             z-index: 1;
             font-weight: bold;
+            margin: 0 auto;
+            pointer-events: none;
+        }
+
+        #back-btn {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 101;
+            display: none;
         }
 
 
@@ -436,3 +467,5 @@
         input:checked+.slider:before {
             transform: translateX(20px);
         }
+
+        
